@@ -95,7 +95,7 @@ const DetailPage: React.FC = () => {
       if (!activitySearch) return true;
       const term = activitySearch.toLowerCase();
       if (activitySearchField === 'user') return log.user.toLowerCase().includes(term);
-      if (activitySearchField === 'details') return log.details?.toLowerCase().includes(term);
+      if (activitySearchField === 'details') return log.details?.toLowerCase().includes(term) ?? false;
       return log.user.toLowerCase().includes(term) || (log.details?.toLowerCase().includes(term) ?? false);
     })
     .sort((a, b) => {
@@ -608,13 +608,9 @@ const DetailPage: React.FC = () => {
 
             {activeTab === 'activities' && (
               <div className="pb-12 max-w-2xl mx-auto">
-                <header className="mb-10 flex justify-between items-end">
-                  <div>
-                    <h3 className="text-xl font-bold text-[rgba(0,0,0,0.88)] m-0">Activity Log</h3>
-                    <p className="text-sm text-[rgba(0,0,0,0.45)] mt-1">Audit trail for {data.id}</p>
-                  </div>
-                  <Button type="link" icon={<HistoryOutlined />} className="text-[#1677ff] font-semibold text-sm">View History</Button>
-                </header>
+                <div className="mb-10">
+                  <h3 className="text-xl font-bold text-[rgba(0,0,0,0.88)] m-0">Activity Log</h3>
+                </div>
 
                 <div className="mb-8 flex flex-wrap gap-3 items-center bg-white p-3 rounded-md border border-[#f0f0f0] shadow-sm">
                   <div className="flex-1 min-w-[200px]">
