@@ -1,12 +1,12 @@
 import React from 'react';
 import { Layout, Menu, Avatar, Badge, Input, Button } from 'antd';
 import { SearchOutlined, BellOutlined, SettingOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, Outlet } from 'react-router-dom';
 
 const { Header, Content } = Layout;
 
 interface MainLayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
@@ -64,6 +64,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </div>
       </Header>
       <Content className="pt-0">
+        <Outlet />
         {children}
       </Content>
     </Layout>

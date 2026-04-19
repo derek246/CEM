@@ -56,6 +56,7 @@ export interface EarlyWarning {
   categories: string[];
   description: string;
   riskMeetingRequired: string;
+  meetingDate?: string;
   likelihood: Likelihood;
   severity: Severity;
   priority: Priority;

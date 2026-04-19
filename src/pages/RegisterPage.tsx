@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Input, Tag, Space, Pagination } from 'antd';
-import { PlusOutlined, SearchOutlined, DownloadOutlined, FilterOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Table, Button, Input, Tag, Space, Pagination, Modal, message } from 'antd';
+import { PlusOutlined, SearchOutlined, DownloadOutlined, FilterOutlined, ReloadOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
-import { getStore } from '../store/demoStore';
+import { getStore, deleteWarning } from '../store/demoStore';
 import { EarlyWarning, Status } from '../types';
 
 const getStatusColor = (status: Status) => {
@@ -106,6 +106,32 @@ const RegisterPage: React.FC = () => {
         <Tag color={getStatusColor(status)} className="rounded-full px-3 py-0.5" style={{ fontSize: '10px', fontWeight: 'bold' }}>
           {status}
         </Tag>
+      ),
+    },
+    {
+      title: '',
+      key: 'actions',
+      render: (_: any, record: EarlyWarning) => (
+        <Button 
+          type="text" 
+          danger 
+          icon={<DeleteOutlined />} 
+          onClick={(e) => {
+            e.stopPropagation();
+            Modal.confirm({
+              title: 'Delete Notice',
+              content: `Are you sure you want to delete ${record.id}?`,
+              okText: 'Delete',
+              okType: 'danger',
+              cancelText: 'Cancel',
+              onOk: () => {
+                deleteWarning(record.id);
+                setData(getStore());
+                message.success('Notice deleted successfully');
+              }
+            });
+          }}
+        />
       ),
     },
   ];

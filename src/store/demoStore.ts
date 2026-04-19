@@ -13,9 +13,10 @@ const MOCK_DATA: EarlyWarning[] = [
     notifiedDate: '2025-10-01',
     replyRequiredDate: '2025-10-14',
     noticeGivenBy: 'Main Contractor',
-    categories: ['Increasing Total Price', 'Delaying Completion'],
+    categories: ['Increasing the Total of the Price', 'Delaying Completion'],
     description: 'Main entrance flood, pls see images attached. Water levels rose significantly after heavy rain.',
     riskMeetingRequired: 'To be discussed at next scheduled early warning meeting',
+    meetingDate: '2025-11-09',
     likelihood: 'Medium',
     severity: 'High',
     priority: 'High',
@@ -61,9 +62,10 @@ const MOCK_DATA: EarlyWarning[] = [
     notifiedDate: '2025-10-03',
     replyRequiredDate: '2025-10-17',
     noticeGivenBy: 'Main Contractor',
-    categories: ['Delaying Completion', 'Impairing performance'],
+    categories: ['Delaying Completion', 'Impairing the performance of the work in work'],
     description: 'Conflict with existing electrical cables not shown on drawings.',
     riskMeetingRequired: 'To be discussed at next scheduled meeting',
+    meetingDate: '2025-11-12',
     likelihood: 'Medium',
     severity: 'Medium',
     priority: 'Medium',
@@ -102,4 +104,9 @@ export const updateWarning = (updated: EarlyWarning) => {
     store[index] = updated;
     saveStore(store);
   }
+};
+
+export const deleteWarning = (id: string) => {
+  const store = getStore();
+  saveStore(store.filter(w => w.id !== id));
 };

@@ -155,8 +155,11 @@ const CreatePage: React.FC = () => {
                 <Checkbox.Group className="w-full">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[
-                      'Increasing the Total of the Price', 'Delaying Completion',
-                      'Delaying Meeting a Key Date', 'Impairing the performance of the work'
+                      'Increasing the Total of the Price', 
+                      'Delaying Completion',
+                      'Delaying Meeting a Key Date', 
+                      'Impairing the performance of the work in work',
+                      "Increasing the Contractor's total cost"
                     ].map(cat => (
                       <div key={cat} className="p-4 border border-[#f0f0f0] rounded-md hover:bg-[#fafafa] transition-all flex items-center gap-3">
                         <Checkbox value={cat} className="m-0"><span className="text-sm font-medium text-[rgba(0,0,0,0.88)]">{cat}</span></Checkbox>
