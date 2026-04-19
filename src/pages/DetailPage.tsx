@@ -22,12 +22,16 @@ import dayjs from 'dayjs';
 
 const { TextArea } = Input;
 
+const randomDelay = () => new Promise(res => setTimeout(res, Math.floor(Math.random() * 601) + 200));
+
 const DetailPage: React.FC = () => {
   const params = useParams();
   const id = params['*'];
   const navigate = useNavigate();
   const [data, setData] = useState<EarlyWarning | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('general');
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewFile, setPreviewFile] = useState<{name: string, type: string} | null>(null);
@@ -68,18 +72,24 @@ const DetailPage: React.FC = () => {
   }, [blocker]);
 
   useEffect(() => {
-    const store = getStore();
-    const item = store.find(w => w.id === id);
-    if (item) {
-      setData(item);
-    }
+    setIsLoading(true);
+    randomDelay().then(() => {
+      const store = getStore();
+      const item = store.find(w => w.id === id);
+      if (item) setData(item);
+      setIsLoading(false);
+    });
   }, [id]);
 
+  if (isLoading) return <div className="p-20 text-center"><Empty description="Loading..." /></div>;
   if (!data) return <div className="p-20 text-center"><Empty description="Notice not found" /></div>;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (data) {
+      setIsSaving(true);
+      await randomDelay();
       updateWarning(data);
+      setIsSaving(false);
       setIsEditMode(false);
       message.success('Changes saved successfully');
     }
@@ -187,7 +197,7 @@ const DetailPage: React.FC = () => {
               Back to Register
             </Button>
             <Divider orientation="vertical" className="h-6 mx-2" />
-            <Button 
+            {/* <Button 
               danger 
               icon={<DeleteOutlined />} 
               onClick={() => {
@@ -208,7 +218,7 @@ const DetailPage: React.FC = () => {
               className="font-semibold"
             >
               Delete
-            </Button>
+            </Button> */}
             <Button className="font-semibold">Meeting Detail</Button>
             <Button className="font-semibold">View Relations</Button>
           </Space>
@@ -223,12 +233,13 @@ const DetailPage: React.FC = () => {
         </div>
 
         {/* Right Side: Tabbed Interface */}
-        <div className="w-1/2 bg-white overflow-hidden flex flex-col">
+        <div className="w-1/2 bg-white overflow-hidden flex flex-col padding-8">
           <Tabs 
             activeKey={activeTab}
             onChange={setActiveTab}
             className="pl-16 pr-8 pt-4 shrink-0"
             items={[
+              { key: 'dummy-for-sapce', label: '' },
               { key: 'general', label: 'General Information' },
               { key: 'approval', label: 'Approval Progress' },
               { key: 'response', label: 'Response' },
@@ -248,6 +259,8 @@ const DetailPage: React.FC = () => {
                     type={isEditMode ? 'primary' : 'default'} 
                     onClick={() => isEditMode ? handleSave() : setIsEditMode(true)}
                     className={!isEditMode ? 'text-[#1677ff] border-[#1677ff] font-semibold' : ''}
+                    loading={isSaving}
+                    disabled={isSaving}
                     size="small"
                   >
                     {isEditMode ? 'SAVE' : 'EDIT'}
@@ -369,6 +382,8 @@ const DetailPage: React.FC = () => {
                     <Button 
                       onClick={() => isEditMode ? handleSave() : setIsEditMode(true)}
                       size="small"
+                      loading={isSaving}
+                      disabled={isSaving}
                       className="text-[#1677ff] border-[#1677ff] font-semibold uppercase px-4"
                     >
                       {isEditMode ? 'SAVE' : 'EDIT'}
@@ -581,7 +596,7 @@ const DetailPage: React.FC = () => {
                         dataIndex: 'user',
                         render: (text) => (
                            <Space>
-                             <Avatar size="small" className="bg-[#1677ff] text-[10px] font-bold">{text.split(' ').map(n=>n[0]).join('')}</Avatar>
+                             <Avatar size="small" className="bg-[#1677ff] text-[10px] font-bold">{text.split(' ').map((n: string) => n[0]).join('')}</Avatar>
                              <span className="font-semibold">{text}</span>
                            </Space>
                         )
@@ -680,6 +695,8 @@ const DetailPage: React.FC = () => {
                     <Button 
                       size="small"
                       onClick={() => isEditMode ? handleSave() : setIsEditMode(true)}
+                      loading={isSaving}
+                      disabled={isSaving}
                       className="text-[#1677ff] border-[#1677ff] font-semibold uppercase px-4 rounded-sm"
                     >
                       {isEditMode ? 'SAVE' : 'EDIT'}
@@ -787,6 +804,8 @@ const DetailPage: React.FC = () => {
                     <Button 
                       size="small" 
                       onClick={() => isEditMode ? handleSave() : setIsEditMode(true)}
+                      loading={isSaving}
+                      disabled={isSaving}
                       className="text-[#1677ff] border-[#1677ff] font-semibold uppercase px-4 rounded-sm"
                     >
                       {isEditMode ? 'SAVE' : 'EDIT'}

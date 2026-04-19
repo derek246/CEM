@@ -19,7 +19,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <div className="flex items-center gap-3">
              <div className="w-8 h-8 bg-[#1677ff] rounded-md shadow-sm" />
              <Link to="/" className="text-lg font-bold text-black tracking-tighter hover:text-[#1677ff]">
-               VANGUARD
+               PIMS
              </Link>
           </div>
           <Menu
@@ -30,8 +30,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             className="hidden md:flex flex-1 min-w-[400px]"
             items={[
               { key: '/dashboard', label: <Link to="/dashboard">Dashboard</Link> },
-              { key: '/risc', label: <Link to="/risc">Inventory Management</Link> },
-              { key: '/', label: <Link to="/">User Accounts</Link> },
+              {
+                key: '/risc',
+                label: 'CE Module',
+                children: [
+                  { key: '/risc-ewn', label: <Link to="/">Early Warning Register</Link> },
+                ],
+              },
               { key: '/reports', label: <Link to="/reports">System Logs</Link> },
             ]}
           />
@@ -51,9 +56,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <Button type="text" shape="circle" icon={<SettingOutlined className="text-black/60" />} />
           
           <div className="flex items-center gap-3 ml-2 pl-4 border-l border-[#f0f0f0]">
-            <div className="text-right hidden lg:block">
-               <div className="text-sm font-semibold text-black leading-none">Alex Morgan</div>
-               <div className="text-[11px] text-[#8c8c8c] mt-1">Admin Role</div>
+            <div className="text-right hidden lg:flex lg:flex-col lg:justify-center">
+               <div className="text-sm font-semibold text-black leading-tight">Alex Morgan</div>
+               <div className="text-[11px] text-[#8c8c8c] leading-tight">Admin Role</div>
             </div>
             <Avatar 
               className="bg-[#faad14] font-bold text-white shadow-sm"

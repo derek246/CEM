@@ -65,7 +65,6 @@ export default function App() {
         },
         Tabs: {
           titleFontSizeSM: 14,
-          horizontalMargin: 0,
         }
       },
     }}>

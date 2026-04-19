@@ -18,12 +18,15 @@ const RegisterPage: React.FC = () => {
   const [data, setData] = useState<EarlyWarning[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const navigate = useNavigate();
 
   useEffect(() => {
     // Simulate loading
     setTimeout(() => {
-      setData(getStore());
+      const sorted = getStore().slice().sort((a, b) => b.id.localeCompare(a.id));
+      setData(sorted);
       setLoading(false);
     }, 500);
   }, []);
@@ -108,32 +111,6 @@ const RegisterPage: React.FC = () => {
         </Tag>
       ),
     },
-    {
-      title: '',
-      key: 'actions',
-      render: (_: any, record: EarlyWarning) => (
-        <Button 
-          type="text" 
-          danger 
-          icon={<DeleteOutlined />} 
-          onClick={(e) => {
-            e.stopPropagation();
-            Modal.confirm({
-              title: 'Delete Notice',
-              content: `Are you sure you want to delete ${record.id}?`,
-              okText: 'Delete',
-              okType: 'danger',
-              cancelText: 'Cancel',
-              onOk: () => {
-                deleteWarning(record.id);
-                setData(getStore());
-                message.success('Notice deleted successfully');
-              }
-            });
-          }}
-        />
-      ),
-    },
   ];
 
   const filteredData = data.filter(item => 
@@ -141,8 +118,20 @@ const RegisterPage: React.FC = () => {
     item.id.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  const pagedData = filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
   return (
     <div className="p-6 bg-[#f5f5f5] min-h-[calc(100vh-64px)]">
+      {/* Page Header */}
+      <div className="mb-6">
+        <h1 className="text-xl font-bold text-[rgba(0,0,0,0.88)] mb-1">
+          Early Warning Register - DC/2024/09: Stormwater Storage Scheme and Drainage Improvement Works in South District
+        </h1>
+        <p className="text-sm text-[rgba(0,0,0,0.45)]">
+          Managing risks and early notifications for project phase 4A.
+        </p>
+      </div>
+
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div className="bg-white p-5 rounded-lg border border-[#f0f0f0] shadow-sm">
@@ -170,12 +159,12 @@ const RegisterPage: React.FC = () => {
               prefix={<SearchOutlined className="text-[rgba(0,0,0,0.25)]" />}
               placeholder="Search register..."
               value={searchText}
-              onChange={e => setSearchText(e.target.value)}
+              onChange={e => { setSearchText(e.target.value); setCurrentPage(1); }}
               className="h-9 w-64 border-[#f0f0f0] rounded-md text-sm"
             />
             <div className="flex items-center gap-1 border-l border-[#f0f0f0] pl-4">
               <Button icon={<FilterOutlined />} type="text" className="text-[rgba(0,0,0,0.65)]">Filter</Button>
-              <Button icon={<ReloadOutlined />} type="text" className="text-[#1677ff]" onClick={() => setSearchText('')}>Reset</Button>
+              <Button icon={<ReloadOutlined />} type="text" className="text-[#1677ff]" onClick={() => { setSearchText(''); setCurrentPage(1); }}>Reset</Button>
             </div>
           </div>
           <Button 
@@ -184,13 +173,13 @@ const RegisterPage: React.FC = () => {
             onClick={() => navigate('/create')}
             className="h-9 px-4 font-semibold rounded-md"
           >
-            + Create New Entry
+            Create New Entry
           </Button>
         </div>
 
         <Table 
           columns={columns} 
-          dataSource={filteredData} 
+          dataSource={pagedData} 
           rowKey="id"
           pagination={false}
           loading={loading}
@@ -202,13 +191,14 @@ const RegisterPage: React.FC = () => {
         
         {/* Custom Pagination Footer */}
         <div className="px-6 py-3 bg-[#fafafa] flex items-center justify-between border-t border-[#f0f0f0]">
-          <p className="text-xs text-[rgba(0,0,0,0.45)]">Showing 1 to {filteredData.length} of {data.length} entries</p>
+          <p className="text-xs text-[rgba(0,0,0,0.45)]">Showing {filteredData.length === 0 ? 0 : (currentPage - 1) * pageSize + 1} to {Math.min(currentPage * pageSize, filteredData.length)} of {filteredData.length} entries</p>
           <Pagination
-            defaultCurrent={1}
-            total={data.length}
-            pageSize={10}
+            current={currentPage}
+            total={filteredData.length}
+            pageSize={pageSize}
             size="small"
             showSizeChanger={false}
+            onChange={(page) => setCurrentPage(page)}
           />
         </div>
       </div>

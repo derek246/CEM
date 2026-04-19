@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Form, Input, Button, DatePicker, Select, 
   Checkbox, Tag, Space, Divider, message 
@@ -15,11 +15,16 @@ import dayjs from 'dayjs';
 
 const { TextArea } = Input;
 
+const randomDelay = () => new Promise(res => setTimeout(res, Math.floor(Math.random() * 601) + 200));
+
 const CreatePage: React.FC = () => {
   const [form] = Form.useForm();
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const onFinish = (values: any) => {
+  const onFinish = async (values: any) => {
+    setSubmitting(true);
+    await randomDelay();
     const newWarning: EarlyWarning = {
       id: `DC/2024/09-EWN-${Math.floor(Math.random() * 9000) + 1000}`,
       submissionRef: values.submissionRef,
@@ -51,6 +56,7 @@ const CreatePage: React.FC = () => {
 
     addWarning(newWarning);
     message.success('Draft created successfully');
+    setSubmitting(false);
     navigate('/');
   };
 
@@ -231,6 +237,8 @@ const CreatePage: React.FC = () => {
                 type="primary" 
                 htmlType="submit"
                 icon={<SaveOutlined />} 
+                loading={submitting}
+                disabled={submitting}
                 className="px-8 h-10 font-bold text-sm shadow-sm"
               >
                 Create Entry
